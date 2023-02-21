@@ -2,7 +2,7 @@
 ## Windows
 
 01. Установить Python https://www.python.org/downloads/
-02. Проверка версии Python
+02. Проверить версю Python
 ```
   py -V
 ```
