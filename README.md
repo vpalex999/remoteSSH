@@ -1,10 +1,10 @@
 # remoteSSH
-Windows
+## Windows
 
 01. Установить Python https://www.python.org/downloads/
 02. Проверка версии Python
 ```
-py -V
+  py -V
 ```
 03. Скачать файлы скрипта https://github.com/Serge-GHSHCH/remoteSSH локально, например в директорию ../remoteSSH
 04. Открыть CMD (win+R)
@@ -36,16 +36,17 @@ py -V
 ```
 11. Настроить наш скрипт.
 	Открыть remote_ssh.py в редакоре.
-	Для полей, показанных ниже задать соответствующие значения и сохранить.
-	username = 'логин'
-	password = 'пароль'
-	url = 'IP-адрес'
+	Для полей, показанных ниже задать соответствующие значения для подключения и выполнения команд, а за тем и сохранить:
+	* username = 'логин'
+	* password = 'пароль'
+	* url = 'IP-адрес'
+	* command_list = [список команд]
 12. Запустить скрипт и дождаться его выполнения
 ```
   py remote_ssh.py
 ```
 
-Linux
+## Linux
 
   01  python -V
   02  python3 -V
