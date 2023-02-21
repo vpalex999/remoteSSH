@@ -2,22 +2,18 @@ import asyncio
 import asyncssh
 import sys
 
-
-username = 'server1'
-password = 'server1'
+url = '192.168.200.7'
+username = 'root'
+password = 'pass'
 
 command_list = [
-    "pwd",
-    "ls -l",
-    "echo server1 | sudo -S ls /root",
-    "echo server1 | sudo -S systemctl status network-online.target",
-    "mkdir test3",
-    "mkdir test4",
-    "pwd",
-    "ls -l",
+    "echo [pass] | sudo -S systemctl stop ziesha",
+    "cd $HOME/bazuka && git pull origin master && cargo update && cargo install --path .",
+    "echo [pass] | sudo -S systemctl restart ziesha",
+    "echo [pass] | sudo -S systemctl status ziesha",
+    "echo [pass] | sudo -S journalctl -u ziesha",
 ]
 
-url = '192.168.200.7'
 
 
 async def run_client(command: str) -> None:
@@ -38,4 +34,4 @@ try:
 except (OSError) as exc:
     sys.exit('SSH connection failed: ' + str(exc))
 except (asyncssh.Error) as err:
-    sys.exit('SSH command failed: ' + err.stderr)
+    sys.exit('SSH command failed: ' + str(err))
