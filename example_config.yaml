@@ -1,0 +1,15 @@
+nodes:
+  [
+    {
+      url: "173.249.15.40",
+      username: "root",
+      password: "doiC2d$Mdm*4C",
+    },
+    {
+      url: "75.119.146.105",
+      username: "root",
+      password: "8tFLy7x6FkmrAwvWF7tYK74mfzF",
+    },
+  ]
+
+commands: ["pwd", "ls -l"]
