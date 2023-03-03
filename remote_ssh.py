@@ -1,37 +1,53 @@
+"""
+Usage:
+    remote_ssh config <filename>
+
+Options:
+    <filename>      the configuration file (*.yaml)
+"""
 import asyncio
 import asyncssh
 import sys
+from docopt import docopt
 
-url = '192.168.200.7'
-username = 'root'
-password = 'pass'
-
-command_list = [
-    "echo [pass] | sudo -S systemctl stop ziesha",
-    "cd $HOME/bazuka && git pull origin master && cargo update && cargo install --path .",
-    "echo [pass] | sudo -S systemctl restart ziesha",
-    "echo [pass] | sudo -S systemctl status ziesha",
-    "echo [pass] | sudo -S journalctl -u ziesha",
-]
+from src.config import Config
+from src.utils import sudo_convert
 
 
+async def run_client(config: Config) -> None:
+    nodes = config.nodes
+    commands = config.commands
+    if len(nodes) > 0:
+        for node in nodes:
+            url = node["url"]
+            username = node["username"]
+            password = node["password"]
 
-async def run_client(command: str) -> None:
-    async with asyncssh.connect(url, password=password, username=username) as conn:
-        result = await conn.run(command, check=True)
+            for command in commands:
+                async with asyncssh.connect(
+                        url, password=password, username=username) as conn:
+                    result = await conn.run(sudo_convert(command, password), check=True)
 
-        if result.exit_status == 0:
-            print(result.stdout, end='')
-        else:
-            print(result.stderr, end='', file=sys.stderr)
-            print(f'Program exited with status {result.exit_status}',
-                  file=sys.stderr)
+                    if result.exit_status == 0:
+                        print(f"node {url} command '{command}':\n{result.stdout}")
+                    else:
+                        print(f"node {url}: {result.stderr}",
+                              end='', file=sys.stderr)
+                        print(f"node {url}: Program exited with status {result.exit_status}",
+                              file=sys.stderr)
 
 
-try:
-    for command in command_list:
-        asyncio.get_event_loop().run_until_complete(run_client(command))
-except (OSError) as exc:
-    sys.exit('SSH connection failed: ' + str(exc))
-except (asyncssh.Error) as err:
-    sys.exit('SSH command failed: ' + str(err))
+if __name__ == "__main__":
+    arguments = docopt(__doc__)  # type: ignore
+    print(arguments)
+
+    if arguments.get('config'):
+        config = Config.from_file(arguments["<filename>"])
+        print(str(config))
+
+        try:
+            asyncio.run(run_client(config))
+        except (OSError) as exc:
+            sys.exit('SSH connection failed: ' + str(exc))
+        except (asyncssh.Error) as err:
+            sys.exit('SSH command failed: ' + str(err))
