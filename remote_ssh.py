@@ -11,6 +11,7 @@ import sys
 from docopt import docopt
 
 from src.config import Config
+from src.utils import sudo_convert
 
 
 async def run_client(config: Config) -> None:
@@ -25,10 +26,10 @@ async def run_client(config: Config) -> None:
             for command in commands:
                 async with asyncssh.connect(
                         url, password=password, username=username) as conn:
-                    result = await conn.run(command, check=True)
+                    result = await conn.run(sudo_convert(command, password), check=True)
 
                     if result.exit_status == 0:
-                        print(f"node {url}: {result.stdout}", end='')
+                        print(f"node {url} command '{command}':\n{result.stdout}")
                     else:
                         print(f"node {url}: {result.stderr}",
                               end='', file=sys.stderr)

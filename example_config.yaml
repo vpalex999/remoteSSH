@@ -12,4 +12,4 @@ nodes:
     },
   ]
 
-commands: ["pwd", "ls -l"]
+commands: ["sudo ls /root", "docker ps -a"]
